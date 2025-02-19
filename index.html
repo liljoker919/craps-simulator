@@ -10,6 +10,44 @@
 
 <body>
     <h1>Craps Simulator</h1>
+
+    <form id="crapsForm">
+        <label for="bankroll">Starting Bankroll:</label>
+        <input type="number" id="bankroll" min="1" required>
+
+        <label for="tableMin">Table Minimum:</label>
+        <input type="number" id="tableMin" value="15" min="1" required>
+
+        <label for="targetWin">Win Goal:</label>
+        <input type="number" id="targetWin" min="1" required>
+
+        <label for="numSimulations">Number of Simulations:</label>
+        <input type="number" id="numSimulations" value="1000" min="1" required>
+
+        <h2>Betting Options</h2>
+
+        <label for="passLine">Pass Line Bet:</label>
+        <input type="number" id="passLine" min="0" value="0">
+
+        <label for="field">Field Bet:</label>
+        <input type="number" id="field" min="0" value="0">
+
+        <h3>Hardways Bets</h3>
+        <label for="hard4">Hard 4:</label>
+        <input type="number" id="hard4" min="0" value="0">
+
+        <label for="hard6">Hard 6:</label>
+        <input type="number" id="hard6" min="0" value="0">
+
+        <label for="hard8">Hard 8:</label>
+        <input type="number" id="hard8" min="0" value="0">
+
+        <label for="hard10">Hard 10:</label>
+        <input type="number" id="hard10" min="0" value="0">
+
+        <button type="button" id="runSimulation">Run Simulation</button>
+    </form>
+
     <script src="js/script.js"></script>
 </body>
 
