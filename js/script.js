@@ -10,6 +10,11 @@ function resolveBets(roll, bets, bankroll) {
     const total = roll[0] + roll[1];
     let payout = 0;
 
+    // Ensure bankroll is a valid number
+    bankroll = bankroll || 0;
+
+    console.log(`Processing Roll: ${roll.join("-")}, Initial Bankroll: ${bankroll}`);
+
     // Pass Line Bet
     if (bets.passLine && (total === 7 || total === 11)) {
         payout += bets.passLine * 2;
@@ -23,13 +28,23 @@ function resolveBets(roll, bets, bankroll) {
         payout += bets.field * (1 + multiplier);
     }
 
-    // Hardways
-    if (bets.hardways[total] && roll[0] === roll[1]) {
-        payout += bets.hardways[total] * 7; // Standard hardway payout
+    // Hardways Bet
+    if (bets.hardways && bets.hardways[total] && roll[0] === roll[1]) {
+        payout += bets.hardways[total] * 7;
     }
 
-    // Update bankroll
-    bankroll += payout - Object.values(bets).reduce((sum, bet) => sum + (bet || 0), 0);
+    // Deduct total bet amount (Ensure every value is valid)
+    let totalBet = (bets.passLine || 0) + (bets.field || 0) +
+        (bets.hardways[4] || 0) + (bets.hardways[6] || 0) +
+        (bets.hardways[8] || 0) + (bets.hardways[10] || 0);
+
+    console.log(`Total Bet: ${totalBet}, Payout: ${payout}`);
+
+    // Ensure we are not subtracting undefined values
+    bankroll = bankroll + payout - totalBet;
+
+    console.log(`Updated Bankroll: ${bankroll}`);
+
     return bankroll;
 }
 
@@ -38,13 +53,24 @@ function runSimulation(bankroll, targetWin, targetLoss, bets, numSimulations) {
     let results = [];
     let startingBankroll = bankroll;
 
+    console.log("Starting Simulation");
+    console.log(`Initial Bankroll: ${bankroll}, Target Win: ${targetWin}, Target Loss: ${targetLoss}`);
+
     for (let i = 0; i < numSimulations; i++) {
         const roll = rollDice();
         bankroll = resolveBets(roll, bets, bankroll);
-        console.log(`Roll: ${roll.join("-")}, Bankroll: ${bankroll}`); // Debugging output
+
+        if (isNaN(bankroll)) {
+            console.error(`ERROR: Bankroll became NaN at roll ${i + 1}`);
+            break;
+        }
+
+        console.log(`Roll ${i + 1}: ${roll.join("-")}, New Bankroll: ${bankroll}`);
+
         results.push({ roll: roll.join("-"), bankroll });
 
         if (bankroll >= startingBankroll + targetWin || bankroll <= targetLoss) {
+            console.log("Simulation Ended: Win/Loss Condition Reached");
             break;
         }
     }
